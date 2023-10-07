@@ -12,6 +12,7 @@ interface Options {
   headers?: object;
   query?: object;
 }
+
 function queryStringify(data: object): string {
   let query = "?";
   for (const [key, value] of Object.entries(data)) {
@@ -22,69 +23,88 @@ function queryStringify(data: object): string {
 }
 
 function setHeaders(xhr: XMLHttpRequest, headers: object) {
-  if (!xhr || !headers) {
-    return;
-  }
   for (const [header, value] of Object.entries(headers)) {
     xhr.setRequestHeader(header, value);
   }
 }
 
 class HTTPClient {
-  get = (url: string, options: Options = {}) => {
-    return this.request(
-      url,
+  private base: string = "";
+
+  constructor(base: string) {
+    this.base = base;
+  }
+
+  get<TResponse>(path: string, options: Options = {}): Promise<TResponse> {
+    return this.request<TResponse>(
+      this.base.concat(path),
       { ...options, method: METHODS.GET, query: options.data },
       options.timeout,
     );
-  };
-  post = (url: string, options: Options = {}) => {
-    return this.request(
-      url,
+  }
+
+  post<TResponse>(path: string, options: Options = {}): Promise<TResponse> {
+    return this.request<TResponse>(
+      this.base.concat(path),
       { ...options, method: METHODS.POST },
       options.timeout,
     );
-  };
-  put = (url: string, options: Options = {}) => {
+  }
+
+  put(path: string, options: Options = {}) {
     return this.request(
-      url,
+      this.base.concat(path),
       { ...options, method: METHODS.PUT },
       options.timeout,
     );
-  };
-  delete = (url: string, options: Options = {}) => {
+  }
+
+  delete(path: string, options: Options = {}) {
     return this.request(
-      url,
+      this.base.concat(path),
       { ...options, method: METHODS.DELETE },
       options.timeout,
     );
-  };
+  }
 
-  request = (url: string, options: Options, _timeout = 5000) => {
-    console.log("options", options);
+  request<TResponse>(
+    url: string,
+    options: Options,
+    _timeout = 5000,
+  ): Promise<TResponse> {
     const { method = "get", data, query = {}, headers = {} } = options;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<TResponse>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open(method, url.concat(queryStringify(query)));
 
       setHeaders(xhr, headers);
 
       xhr.onload = function () {
-        resolve(xhr);
+        try {
+          resolve(JSON.parse(xhr.response));
+        } catch (e) {
+          resolve(this.response);
+        }
       };
 
       xhr.onabort = reject;
       xhr.onerror = reject;
       xhr.ontimeout = reject;
+
+      xhr.withCredentials = true;
+
       if (method === METHODS.GET || !data) {
         xhr.send();
+      } else if (data instanceof FormData) {
+        xhr.send(data);
       } else {
-        xhr.send(data as XMLHttpRequestBodyInit);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.send(JSON.stringify(data));
       }
       //setTimeout(reject, timeout);
     });
-  };
+  }
 }
 
 export { HTTPClient };

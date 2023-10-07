@@ -1,9 +1,13 @@
 import { validateLogin, validatePassword } from "@/shared/lib";
 import { Component } from "@/shared/model";
+import { SigninFormProps } from "./signinForm.types";
+import { AuthController } from "../../api";
 
 class SigninForm extends Component {
-  constructor() {
+  constructor(props: SigninFormProps) {
+    const authController = new AuthController();
     super({
+      ...props,
       validate: {
         login: validateLogin,
         password: validatePassword,
@@ -14,10 +18,7 @@ class SigninForm extends Component {
         const password = this.refs.password.value();
 
         if (login && password) {
-          console.log({
-            login,
-            password,
-          });
+          authController.signin({ login, password });
         }
       },
     });
