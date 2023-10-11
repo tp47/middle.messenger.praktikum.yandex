@@ -9,9 +9,10 @@ class ChatCard extends Component {
       ...props,
       events: {
         click: () => {
-          window.store.set({ currentChatId: props.id });
+          const { id } = props;
+          window.store.set({ currentChatId: id });
           const chatAPI = new ChatAPI();
-          chatAPI.initChat(props.id as string);
+          chatAPI.initChat(id as string);
         },
       },
     });
@@ -20,25 +21,12 @@ class ChatCard extends Component {
   protected render() {
     return `
       <div class="${styles.chatCard}">
-        <div class="${styles.userImageContainer}">
-          {{{ UserImage isSmall="true" }}}
-        </div>
-
         <div class="${styles.messageContainer}">
           <span class="${styles.title}">
             {{title}}
           </span>
           <div class="${styles.message}">
             {{message.content}}
-          </div>
-        </div>
-
-        <div class="${styles.dateContainer}">
-          <span class="${styles.date}">
-            {{date}}
-          </span>
-          <div class="${styles.newMessages}">
-             {{newMessages}}
           </div>
         </div>
       </div>

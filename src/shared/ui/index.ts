@@ -10,3 +10,5 @@ export * from "./infoList";
 export * from "./chatCard";
 export * from "./iconButton";
 export * from "./messageCard";
+export * from "./modal";
+export * from "./link";

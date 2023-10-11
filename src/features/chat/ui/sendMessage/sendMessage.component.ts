@@ -9,6 +9,9 @@ class SendMessage extends Component {
       onSendClick: (event: SubmitEvent) => {
         event.preventDefault();
         const message = this.refs.message.value();
+        if (message === "") {
+          return;
+        }
         const { chatSocket } = window.store.getState();
         chatSocket?.sendMessage(message);
       },
@@ -16,7 +19,7 @@ class SendMessage extends Component {
   }
   protected render() {
     return `
-      <form class="${styles.sendMessage}">
+      <form class="${styles.sendMessage}" onsubmit="event.preventDefault()">
         {{{ Input placeholder="Собщение..." ref="message" value="" }}}
         {{{ IconButton src="${arrowIcon}" onClick=onSendClick type="button" customClass="${styles.sendButton}" }}}
       </form>
