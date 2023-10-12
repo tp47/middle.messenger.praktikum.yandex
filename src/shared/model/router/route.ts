@@ -1,3 +1,4 @@
+import { render } from "@/shared/lib";
 import { Component } from "@/shared/model";
 
 type Options = {
@@ -6,11 +7,15 @@ type Options = {
 
 class Route {
   protected pathname: string;
-  protected componentClass: Component;
+  protected componentClass: typeof Component;
   protected options: Options;
   protected component: Component | null = null;
 
-  constructor(pathname: string, componentClass: Component, options: Options) {
+  constructor(
+    pathname: string,
+    componentClass: typeof Component,
+    options: Options,
+  ) {
     this.pathname = pathname;
     this.componentClass = componentClass;
     this.options = options;
@@ -35,7 +40,10 @@ class Route {
 
   public render(): void {
     if (!this.component) {
-      this.component = new this.componentClass();
+      this.component = new this.componentClass({});
+      render(this.options.rootQuery, this.component);
+    } else {
+      this.component.show();
     }
   }
 }

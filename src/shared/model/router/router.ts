@@ -8,15 +8,17 @@ class Router {
   private currentRoute: Route | null = null;
   private rootQuery: string = "";
 
-  constructor() {
+  constructor(rootQuery: string) {
     if (Router.instance) {
       return Router.instance;
     }
 
+    this.rootQuery = rootQuery;
+
     Router.instance = this;
   }
 
-  public use(pathname: string, component: Component): Router {
+  public use(pathname: string, component: typeof Component): Router {
     const route = new Route(pathname, component, { rootQuery: this.rootQuery });
 
     this.routes.push(route);
@@ -25,8 +27,8 @@ class Router {
   }
 
   public start() {
-    window.addEventListener("popstate", (event: PopStateEvent) => {
-      this.onRoute(event.currentTarget.location.pathname);
+    window.addEventListener("popstate", () => {
+      this.onRoute(window.location.pathname);
     });
 
     this.onRoute(window.location.pathname);
@@ -42,6 +44,8 @@ class Router {
       this.currentRoute.leave();
     }
 
+    this.currentRoute = route;
+
     route.render();
   }
 
@@ -56,6 +60,14 @@ class Router {
         return true;
       }
     });
+  }
+
+  public back(): void {
+    this.history.back();
+  }
+
+  public forward(): void {
+    this.history.forward();
   }
 }
 
