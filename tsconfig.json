@@ -23,7 +23,9 @@
     }
   },
   "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true
   },
   "include": ["src", "server.js", "vite.config.js"]
 }
