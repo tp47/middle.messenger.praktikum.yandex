@@ -22,5 +22,10 @@
       "@/*": ["./src/*"]
     }
   },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true
+  },
   "include": ["src", "server.js", "vite.config.js"]
 }
