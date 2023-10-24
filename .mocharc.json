@@ -1,7 +1,7 @@
 {
   "$shcema": "https://json.schemastore.org/mocharc",
   "extension": ["ts"],
-  "loader": "ts-node/esm",
+  "loader": ["./loader.js"],
   "spec": "src/**/*.spec.ts",
-  "require": ["./mochaSetup.js", "ts-node/register", "tsconfig-paths/register"]
+  "require": ["./mochaSetup.js"]
 }

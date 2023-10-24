@@ -1,5 +1,7 @@
-import { expect } from "chai";
 import { Component } from ".";
+import chai from "chai";
+import sinon from "sinon";
+const { expect } = chai;
 
 interface Props {
   text?: string;
@@ -30,11 +32,54 @@ describe("Component", () => {
     PageClass = Page;
   });
 
-  it("should create component with provided props", () => {
+  it("should be rendered with provided props", () => {
     const text = "hello";
     const pageComponent = new PageClass({ text });
+
     const spanText =
-      pageComponent.element?.querySelector("#test-text")?.innerHTML;
+      pageComponent.element?.querySelector("#test-id")?.innerHTML;
     expect(spanText).to.be.equal(text);
+  });
+
+  it("should hide on hide method", () => {
+    const pageComponent = new PageClass({});
+
+    pageComponent.hide();
+
+    expect(pageComponent.getContent().style.display).equal("none");
+  });
+
+  it("should show after being hidden and shown", () => {
+    const pageComponent = new PageClass({});
+
+    pageComponent.hide();
+    pageComponent.show();
+
+    expect(pageComponent.getContent().style.display).equal("flex");
+  });
+
+  it("should be reactive", () => {
+    const text = "new value";
+    const pageComponent = new PageClass({ text: "Hello" });
+
+    pageComponent.setProps({ text });
+
+    const spanText =
+      pageComponent.element?.querySelector("#test-id")?.innerHTML;
+    expect(spanText).to.be.equal(text);
+  });
+
+  it("should set events on element", () => {
+    const handlerStub = sinon.stub();
+    const pageComponent = new PageClass({
+      events: {
+        click: handlerStub,
+      },
+    });
+
+    const event = new MouseEvent("click");
+    pageComponent.element?.dispatchEvent(event);
+
+    expect(handlerStub.calledOnce).to.be.true;
   });
 });
