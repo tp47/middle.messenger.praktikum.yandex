@@ -3,3 +3,7 @@
 *.ts
 *.json
 mochaSetup.js
+*.svg
+*.png
+*.hbs
+/src

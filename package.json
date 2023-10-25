@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "start": "npm run build && npm run server",
     "server": "node server.js",
-    "lint": "npx eslint \"src/**\"",
+    "lint": "npx eslint",
     "test": "mocha",
     "prepare": "husky install"
   },
