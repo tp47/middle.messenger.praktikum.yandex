@@ -22,5 +22,8 @@
       "@/*": ["./src/*"]
     }
   },
+  "ts-node": {
+    "transpileOnly": true
+  },
   "include": ["src", "server.js", "vite.config.js"]
 }
