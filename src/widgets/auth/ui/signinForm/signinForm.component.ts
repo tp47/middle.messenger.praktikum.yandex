@@ -27,7 +27,7 @@ class SigninForm extends Component {
   protected render() {
     return `
       <div>
-        {{#> AuthForm title="Проверка"}}
+        {{#> AuthForm title="Вход"}}
           <div>
             {{{ InputField ref="login" label="Логин" name="login" validate=validate.login }}}
             {{{ InputField ref="password" label="Пароль" name="password" type="password" validate=validate.password }}}
