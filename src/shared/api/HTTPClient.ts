@@ -10,13 +10,17 @@ interface Options {
   data?: object;
   method?: string;
   headers?: object;
-  query?: object;
 }
 
 function queryStringify(data: object): string {
   let query = "?";
   for (const [key, value] of Object.entries(data)) {
-    query = query.concat(key, "=", value, "&");
+    query = query.concat(
+      encodeURIComponent(key),
+      "=",
+      encodeURIComponent(value),
+      "&",
+    );
   }
   query = query.slice(0, -1);
   return query;
@@ -37,8 +41,8 @@ class HTTPClient {
 
   get<TResponse>(path: string, options: Options = {}): Promise<TResponse> {
     return this.request<TResponse>(
-      this.base.concat(path),
-      { ...options, method: METHODS.GET, query: options.data },
+      this.base.concat(path).concat(queryStringify(options.data ?? {})),
+      { ...options, method: METHODS.GET },
       options.timeout,
     );
   }
@@ -72,11 +76,11 @@ class HTTPClient {
     options: Options,
     _timeout = 5000,
   ): Promise<TResponse> {
-    const { method = "get", data, query = {}, headers = {} } = options;
+    const { method = "get", data, headers = {} } = options;
 
     return new Promise<TResponse>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open(method, url.concat(queryStringify(query)));
+      xhr.open(method, url);
 
       setHeaders(xhr, headers);
 

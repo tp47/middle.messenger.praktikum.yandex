@@ -2,3 +2,8 @@
 /node_modules
 *.ts
 *.json
+mochaSetup.js
+*.svg
+*.png
+*.hbs
+/src
